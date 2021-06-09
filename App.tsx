@@ -1,20 +1,30 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, Image} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Image,
+  Text,
+  PanResponder,
+  View,
+} from 'react-native';
+
+import Snappable from './Snappable';
 
 import Gestures from './lib';
 
+interface location {
+  x: number;
+  y: number;
+}
+
 const App = () => {
   return (
-    <SafeAreaView style={{backgroundColor: 'blue', flex: 1}}>
-      <Gestures rotate="0deg">
-        <Image
-          width={300}
-          height={300}
-          source={{
-            uri: 'https://image.freepik.com/free-vector/shining-circle-purple-lighting-isolated-dark-background_1441-2396.jpg',
-          }}
-        />
-      </Gestures>
+    <SafeAreaView style={{flex: 1}}>
+      <Snappable>
+        <View style={{borderWidth: 1, width: 150, borderColor: 'red'}}>
+          <Text style={{fontSize: 40}}>deneme</Text>
+        </View>
+      </Snappable>
     </SafeAreaView>
   );
 };
