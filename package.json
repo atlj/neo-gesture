@@ -1,50 +1,31 @@
 {
-  "name": "react-native-easy-gestures-new",
-  "version": "2.2.8",
+  "name": "MyApp",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
-  },
-  "description": "React Native Gestures. Support: Drag, Scale and Rotate a Component.",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ewlkkf/react-native-easy-gestures"
-  },
-  "keywords": [
-    "react",
-    "native",
-    "gestures",
-    "drag",
-    "scale",
-    "rotate"
-  ],
-  "author": "Andrey Keske (https://github.com/keske/)",
-  "contributors": [
-    "Maxim (https://github.com/anorudes)",
-    "Hammad Jutt (https://github.com/hammadj)",
-    "David Alexander Bjerremose (https://github.com/DaBs)",
-    "MagicWorld (https://github.com/ewlkkf)"
-  ],
-  "license": "MIT",
-  "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "babel-jest": "^26.6.3",
-    "babel-plugin-transform-decorators-legacy": "^1.3.5",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-preset-react-native": "^4.0.1",
-    "babel-preset-react-native-stage-0": "^1.0.1",
-    "eslint": "^7.18.0",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-react": "^7.22.0",
-    "jest": "^26.6.3",
-    "react": "^16.8.6",
-    "react-native": "^0.63.4",
-    "react-test-renderer": "^16.8.6"
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
   },
   "dependencies": {
-    "prop-types": "^15.6.0"
+    "@types/react-native": "^0.64.10",
+    "prop-types": "^15.6.0",
+    "react": "17.0.1",
+    "react-native": "0.64.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/runtime": "^7.14.0",
+    "@react-native-community/eslint-config": "^2.0.0",
+    "babel-jest": "^27.0.2",
+    "eslint": "^7.28.0",
+    "jest": "^27.0.4",
+    "metro-react-native-babel-preset": "^0.66.0",
+    "react-test-renderer": "17.0.1"
+  },
+  "jest": {
+    "preset": "react-native"
   }
 }
