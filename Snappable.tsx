@@ -1,11 +1,9 @@
 import * as React from 'react';
 import {
   View,
-  ViewProps,
   Dimensions,
   Text,
   LayoutChangeEvent,
-  FlatList,
   ColorValue,
 } from 'react-native';
 import Gestures, {GesturesProps} from './lib';
@@ -46,10 +44,25 @@ type SnappingLine = SnappingLineHorizontal | SnappingLineVertical;
 type Props = {
   children: JSX.Element;
   threshold: number;
+  /**
+   * This is the width of the child object
+   * @param {string} Auto
+   * Take child's width automatically
+   *
+   * This can only be used if child component has a style object that contains width
+   *
+   * children.props.style.width
+   *
+   * @param {number} number
+   * Give the child's width manually
+   *
+   */
+  width: number | 'auto';
 } & GesturesProps;
 
-const Snappable = ({children, threshold, ...rest}: Props) => {
+const Snappable = ({children, threshold, width, ...rest}: Props) => {
   const [phantom, setPhantom] = React.useState<boolean>(false);
+  const [mid, setMid] = React.useState<number>(0);
   const [viewDimensions, setViewDimensions] = React.useState<ViewProperties>({
     height: 0,
     width: 0,
@@ -67,26 +80,73 @@ const Snappable = ({children, threshold, ...rest}: Props) => {
     {orientation: 'Vertical', left: 50, color: 'brown', key: 3},
   ];
 
+  const CalculateVerticalMidPoint = (styles, angle) => {
+    const left: number = styles.left;
+    const top: number = styles.top;
+    let scale =
+      styles.transform[0].scale !== undefined
+        ? styles.transform[0].scale
+        : LocRotScale.scale;
+
+    let middlepoint =
+      viewDimensions.width / 2 -
+      (viewDimensions.width / 1.5) * (scale - 1) +
+      (180 - Math.abs(180 - angle)) * scale +
+      left;
+
+    setMid(middlepoint);
+    return middlepoint;
+  };
+
   const onChange = (_, styles) => {
+    /**
+     * @var This variable affects how frequent the middle point should be calculated on rotations
+     */
+    const updateThreshold = 30;
+    let lastRotation = 0;
     const left: number = styles.left;
     const top: number = styles.top;
     let noMatch: boolean = true;
+    let angle: string | number = LocRotScale.rotation;
+    if (angle === '0deg') {
+      angle = 0;
+    } else {
+      let pointIndex = angle.indexOf('.');
+      angle = angle.slice(0, pointIndex);
+      angle = Number(angle);
+    }
+    if (angle < 0) {
+      angle = 360 + angle;
+    }
+    if (angle > 360) {
+      angle = angle % 360;
+    }
+
+    let middlepoint = CalculateVerticalMidPoint(styles, angle);
+
     SnappingLines.map(data => {
       if (data.orientation === 'Vertical') {
-        // const middlepoint = viewDimensions.width / 2 + LocRotScale.left;
-        let middlepoint = 75 + left;
-
         if (
           middlepoint < data.left + threshold &&
           middlepoint > data.left - threshold
         ) {
           //SNAP
           setLocRotScale({
-            rotation: styles.transform.rotate,
-            scale: styles.transform.scale,
-            top: top,
-            left: data.left - 75,
+            rotation:
+              styles.transform[1].rotate !== undefined
+                ? styles.transform[1].rotate
+                : LocRotScale.rotation,
+            scale:
+              styles.transform[0].scale !== undefined
+                ? styles.transform[0].scale
+                : LocRotScale.scale,
+            top:
+              top +
+              18.5 * LocRotScale.scale -
+              0.01 * viewDimensions.width * (180 - Math.abs(180 - angle)),
+            left: data.left - viewDimensions.width / 2,
           });
+          lastRotation = angle;
           setPhantom(true);
           noMatch = false;
         }
@@ -105,13 +165,17 @@ const Snappable = ({children, threshold, ...rest}: Props) => {
         height: screen.height,
         position: 'absolute',
       }}>
-      <Text>{`x:${LocRotScale.left} y:${LocRotScale.top}`}</Text>
+      <Text>{`x:${LocRotScale.left} y:${LocRotScale.top} rotation:${LocRotScale.rotation}`}</Text>
       <View
         style={{
           position: 'absolute',
           opacity: phantom === true ? 1 : 0,
           left: LocRotScale.left,
           top: LocRotScale.top,
+          transform: [
+            {scale: LocRotScale.scale},
+            {rotate: LocRotScale.rotation},
+          ],
         }}>
         {children}
       </View>
@@ -123,7 +187,7 @@ const Snappable = ({children, threshold, ...rest}: Props) => {
         <View
           onLayout={event => {
             setViewDimensions({
-              width: event.nativeEvent.layout.width,
+              width: width === 'auto' ? children.props.style.width : width,
               height: event.nativeEvent.layout.height,
             });
           }}
@@ -162,6 +226,6 @@ const Snappable = ({children, threshold, ...rest}: Props) => {
   );
 };
 
-Snappable.defaultProps = {threshold: 15};
+Snappable.defaultProps = {threshold: 15} as Props;
 
 export default Snappable;

@@ -20,7 +20,7 @@ interface location {
 const App = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
-      <Snappable>
+      <Snappable width="auto">
         <View style={{borderWidth: 1, width: 150, borderColor: 'red'}}>
           <Text style={{fontSize: 40}}>deneme</Text>
         </View>
