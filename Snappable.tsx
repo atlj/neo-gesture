@@ -116,7 +116,7 @@ const Snappable = ({children, threshold, width, ...rest}: Props) => {
       angle = Number(angle);
     }
     if (angle < 0) {
-      angle = 360 + angle;
+      angle = Math.abs(angle);
     }
     if (angle > 360) {
       angle = angle % 360;
